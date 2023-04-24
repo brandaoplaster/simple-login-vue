@@ -1,26 +1,68 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div id="app">
+    <nav class="navbar navbar-dark bg-primary">
+      <a href="/" class="navbar-brand">Simple login</a>
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <router-link to="/home" class="nav-link">
+            Home
+          </router-link>
+        </li>
+
+        <li v-if="showDashboard" class="nav-item">
+          <router-link to="/dashboard" class="nav-link">
+            Dashboard
+          </router-link>
+        </li>
+      </ul>
+
+      <div v-if="!currentUser" class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <router-link to="/login" class="nav-link">
+            Login
+          </router-link>
+        </li>
+      </div>
+
+      <div v-if="currentUser" class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" @click.prevent="logOut">
+            LogOut
+          </a>
+        </li>
+      </div>
+    </nav>
+
+    <div class="container">
+      <router-view />
+    </div>
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
+   data: () => ({}),
+  computed: {
+    currentUser() {
+      if (this.$store.state.auth.user.data.id != null) {
+        return true
+      } else {
+        return false
+      }
+    },
+    showDashboard() {
+      return this.currentUser
+    }
+  },
+  methods: {
+    logOut() {
+      this.$store.dispatch('auth/logout');
+      this.$router.push('/login');
+    }
   }
-}
+};
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+
 </style>
